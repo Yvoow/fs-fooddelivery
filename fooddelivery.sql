@@ -1,0 +1,3 @@
+ALTER TABLE users
+ADD COLUMN `foodExp` INT DEFAULT 0;
+
