@@ -30,5 +30,9 @@
     "delivery_address": "Lieferadresse",
     "delivering_food": "Essen wird geliefert",
     "already_started": "Du hast bereits eine Lieferung gestartet",
-    "reward_multiplier": "Belohnungs-Multiplikator"
+    "reward_multiplier": "Belohnungs-Multiplikator",
+    "vehicle_spawned": "Du hast ein Lieferfahrzeug gespawnt",
+    "not_enough_money": "Du hast nicht genug Geld, um eine Lieferung zu starten",
+    "deposit_back": "Du hast %s$ von der Fahrzeugkaution zurückbekommen",
+    "not_near_vehicle": "Du bist nicht in der Nähe eines Lieferfahrzeugs"
 }

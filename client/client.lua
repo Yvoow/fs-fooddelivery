@@ -2,6 +2,7 @@ lib.locale()
 local chosenVehicle = nil
 local currentDelivery = nil
 local pickupLocation = nil
+local spawnedVehicle = nil
 
 CreateThread(function()
     if FS.depotlocation.blipEnabled then
@@ -73,15 +74,29 @@ local function deliverFood()
             },
         }) then
             RemoveBlip(routeBlip)
+            if FS.carDeposit.enabled then
+                if DoesEntityExist(spawnedVehicle) then
+                    local vehicleCoords = GetEntityCoords(spawnedVehicle)
+                    local playerCoords = GetEntityCoords(playerPed)
+                    local dist = GetDistanceBetweenCoords(playerCoords.x, playerCoords.y, playerCoords.z, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z, true)
+                    if dist < 10 then
+                        TriggerServerEvent("fs-fooddelivery:server:getDeposit", currentDelivery)
+                    else
+                        exports.ox_lib:notify({title = 'FS-fooddelivery', type = "error", description = locale('not_near_vehicle')})
+                    end
+                end
+            end
             TriggerServerEvent("fs-fooddelivery:server:deliverFood", currentDelivery)
             chosenVehicle = nil
             currentDelivery = nil
             pickupLocation = nil
+            spawnedVehicle = nil
         else 
             RemoveBlip(routeBlip)
             chosenVehicle = nil
             currentDelivery = nil
             pickupLocation = nil
+            spawnedVehicle = nil
         end
         
     end
@@ -166,6 +181,7 @@ local function pickupFood(restaurant)
             chosenVehicle = nil
             currentDelivery = nil
             pickupLocation = nil
+            spawnedVehicle = nil
             exports.ox_lib:notify({title = 'FS-fooddelivery', type = "error", description = locale('pickup_failed')})
         end
 
@@ -273,13 +289,20 @@ AddEventHandler("fs-fooddelivery:client:requestDelivery", function(data)
     chosenVehicle = vehicle
 
     if (FS.carDeposit.enabled) then
-        exports.ox_inventory:RemoveItem(FS.moneyItem, FS.carDeposit.amount)
-        exports.ox_lib:notify("success", locale('car_deposit', FS.carDeposit.amount))
+        ESX.TriggerServerCallback("fs-fooddelivery:server:payDeposit", function(success)
+            if success then
+                exports.ox_lib:notify({title = 'FS-fooddelivery', type = "info", description = locale('vehicle_spawned')})
+            else
+                exports.ox_lib:notify({title = 'FS-fooddelivery', type = "error", description = locale('not_enough_money')})
+                chosenVehicle = nil
+                return
+            end
+        end)
     end
 
     lib.requestModel(vehicle)
 
-    local veh = CreateVehicle(GetHashKey(vehicle), FS.vehicleLocation.x, FS.vehicleLocation.y, FS.vehicleLocation.z, FS.vehicleLocation.heading, true, false)
+    spawnedVehicle = CreateVehicle(GetHashKey(vehicle), FS.vehicleLocation.x, FS.vehicleLocation.y, FS.vehicleLocation.z, FS.vehicleLocation.heading, true, false)
     SetVehicleOnGroundProperly(veh)
     TaskWarpPedIntoVehicle(playerPed, veh, -1)
     SetEntityAsMissionEntity(veh, true, true)

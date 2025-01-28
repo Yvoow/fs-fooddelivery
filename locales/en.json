@@ -30,5 +30,9 @@
     "delivery_address": "Delivery address",
     "delivering_food": "Delivering food",
     "already_started": "You have already started a delivery",
-    "reward_multiplier": "Reward multiplier"
+    "reward_multiplier": "Reward multiplier",
+    "vehicle_spawned": "You have spawned a delivery vehicle",
+    "not_enough_money": "You do not have enough money to start a delivery",
+    "deposit_back": "You have received %s$ back from the car deposit",
+    "not_near_vehicle": "You are not near a delivery vehicle"
 }

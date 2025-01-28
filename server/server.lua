@@ -52,9 +52,7 @@ AddEventHandler('fs-fooddelivery:server:deliverFood', function(currentdel)
     local source = source
     local foodExp = getPlayerData(source)
     local playerCoords = GetEntityCoords(GetPlayerPed(source))
-    print('currentdel', currentdel)
     if not currentdel then return end
-    print(currentdel.x, currentdel.y, currentdel.z)
     local dist = #(playerCoords - vector3(currentdel.x, currentdel.y, currentdel.z))
     if dist < 3.0 then
         if source then
@@ -72,11 +70,55 @@ AddEventHandler('fs-fooddelivery:server:deliverFood', function(currentdel)
             })
 
             exports.ox_inventory:AddItem(source, FS.moneyItem, reward.money)
-            TriggerClientEvent('ox_lib:notify', source, 'success', locale('delivery_complete', reward.xp, reward.money))
+            TriggerClientEvent('ox_lib:notify', source, {
+                ["type"] = "success",
+                ["title"] = "fs-fooddelivery",
+                ["description"] = locale('delivery_complete', reward.xp, reward.money)
+            })
             local logmsg = 'Player: ' .. GetPlayerName(source) .. ' has delivered food and received ' .. reward.xp .. ' xp and $' .. reward.money
             logToDiscord(logmsg)
         end
     else
         logToDiscord('Player: ' .. GetPlayerName(source) .. ' tried to deliver food without being at the delivery point')
+    end
+end)
+
+ESX.RegisterServerCallback("fs-fooddelivery:server:payDeposit", function(source, cb)
+    local src = source
+    local playerCoords = GetEntityCoords(GetPlayerPed(source))
+    local dist = #(playerCoords - vector3(FS.depotlocation.x, FS.depotlocation.y, FS.depotlocation.z))
+    if dist < 10 then
+        local deposit = FS.carDeposit.amount
+
+        local cash = exports.ox_inventory:GetItemCount(src, FS.moneyItem)
+        if cash >= deposit then
+            exports.ox_inventory:RemoveItem(src, FS.moneyItem, deposit)
+            cb(true)
+        else
+            cb(false)
+        end
+    else
+        cb(false)
+    end
+end)
+
+RegisterNetEvent('fs-fooddelivery:server:getDeposit')
+AddEventHandler('fs-fooddelivery:server:getDeposit', function(currentdel)
+    local source = source
+    local playerCoords = GetEntityCoords(GetPlayerPed(source))
+    if not currentdel then return end
+    local dist = #(playerCoords - vector3(currentdel.x, currentdel.y, currentdel.z))
+    if dist < 3.0 then
+        if source then
+            local deposit = FS.carDeposit.amount
+            exports.ox_inventory:AddItem(source, FS.moneyItem, deposit)
+            TriggerClientEvent('ox_lib:notify', source, {
+                ["type"] = "success",
+                ["title"] = "fs-fooddelivery",
+                ["description"] = locale('deposit_back', deposit)
+            })
+        end
+    else
+        logToDiscord('Player: ' .. GetPlayerName(source) .. ' tried to get deposit without being at the depot')
     end
 end)

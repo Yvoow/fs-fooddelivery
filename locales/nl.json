@@ -30,5 +30,9 @@
     "delivery_address": "Bezorgadres",
     "delivering_food": "Bezorgt eten",
     "already_started": "Je hebt al een bezorging gestart",
-    "reward_multiplier": "Beloning vermenigvuldiger"
+    "reward_multiplier": "Beloning vermenigvuldiger",
+    "vehicle_spawned": "Je hebt een bezorgvoertuig gespawned",
+    "not_enough_money": "Je hebt niet genoeg geld om een bezorging te starten",
+    "deposit_back": "Je hebt %s$ terugontvangen van de auto borg",
+    "not_near_vehicle": "Je bent niet in de buurt van een bezorgvoertuig"
 }

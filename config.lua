@@ -3,13 +3,12 @@ FS = {}
 -- need help configuring anything? or just want to check out our other scripts and upcoming releases? 
 -- join our discord! https://discord.gg/3UxGsTbUZG
 
-FS.discordWebhook = "" -- Discord webhook for logging
+FS.discordWebhook = "https://discordapp.com/api/webhooks/1329490327093903380/ohdF9Y6LFY-Rh10yY5LrqYikoFG2ME1JrH24dR1Hx9ByZIgN7e2V6-UMAABWkLwH1UeF" -- Discord webhook for logging
 
 
 FS.moneyItem = "money" 
 FS.carDeposit = {
-    enabled = false,
-    deductDamage = true,
+    enabled = true,
     amount = 1000
 }
 
